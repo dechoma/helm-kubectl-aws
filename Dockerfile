@@ -6,6 +6,9 @@ ARG HELM_VERSION
 ARG TARGETOS
 ARG TARGETARCH
 ARG YQ_VERSION
+ARG AWS_VERSION
+
+ARG UID=1001
 
 RUN apk -U upgrade \
     && apk add --no-cache ca-certificates bash git openssh curl gettext jq \
@@ -19,6 +22,16 @@ RUN apk -U upgrade \
     && kubectl version --client \
     && helm version
 
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "$(pwd)" \
+    --no-create-home \
+    --uid "$UID" \
+    default
+
 WORKDIR /config
+
+USER $UID
 
 CMD bash
